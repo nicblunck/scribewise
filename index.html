@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Tints Safari's toolbar to match the top of the page gradient, and keeps
+       the site in light mode so colors aren't auto-darkened. -->
+  <meta name="theme-color" content="#f7faff" />
+  <meta name="color-scheme" content="light" />
   <title>Scribewise — private transcription for macOS</title>
   <meta name="description" content="Record system audio and your microphone, then transcribe and summarize. Everything runs on your Mac, privately." />
   <link rel="icon" type="image/png" href="assets/icon.png" />
@@ -18,9 +22,12 @@
       --ink: #0c1322;
       --muted: #5b6781;
       --radius: 20px;
+      color-scheme: light;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    /* Match the gradient's top color so Safari's overscroll/rubber-band area
+       blends in instead of flashing white. */
+    html { scroll-behavior: smooth; background-color: #f7faff; }
     body {
       /* SF Pro on Apple devices; Inter everywhere else. */
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
