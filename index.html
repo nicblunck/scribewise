@@ -173,5 +173,33 @@
     Made by Earthling &amp; Co. &middot;
     <a href="https://github.com/nicblunck/scribewise/releases">All releases</a>
   </footer>
+
+  <script>
+    // Subtle parallax: each screenshot drifts slightly slower than the scroll.
+    (function () {
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduce) return;
+      var items = Array.prototype.slice.call(document.querySelectorAll(".media"));
+      var speed = 0.08; // higher = more drift
+      var ticking = false;
+      function update() {
+        var vh = window.innerHeight;
+        for (var i = 0; i < items.length; i++) {
+          var el = items[i];
+          var rect = el.getBoundingClientRect();
+          var center = rect.top + rect.height / 2;
+          var offset = (center - vh / 2) * -speed;
+          el.style.transform = "translate3d(0," + offset.toFixed(1) + "px,0)";
+        }
+        ticking = false;
+      }
+      function onScroll() {
+        if (!ticking) { window.requestAnimationFrame(update); ticking = true; }
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll, { passive: true });
+      update();
+    })();
+  </script>
 </body>
 </html>
