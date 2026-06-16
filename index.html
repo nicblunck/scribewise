@@ -188,7 +188,7 @@
           var el = items[i];
           var rect = el.getBoundingClientRect();
           var center = rect.top + rect.height / 2;
-          var offset = (center - vh / 2) * -speed;
+          var offset = (center - vh / 2) * speed;
           el.style.transform = "translate3d(0," + offset.toFixed(1) + "px,0)";
         }
         ticking = false;
