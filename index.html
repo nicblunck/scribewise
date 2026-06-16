@@ -4,118 +4,170 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Scribewise — private transcription for macOS</title>
-  <meta name="description" content="Record, transcribe, and summarize on your Mac. Everything runs on-device, so your conversations never leave your computer." />
+  <meta name="description" content="Record system audio and your microphone, then transcribe and summarize. Everything runs on your Mac, privately." />
+  <link rel="icon" type="image/png" href="assets/icon.png" />
+  <meta property="og:title" content="Scribewise" />
+  <meta property="og:description" content="Record, transcribe, and summarize. Privately, on your Mac." />
+  <meta property="og:image" content="assets/icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0d0f14;
-      --panel: #151821;
-      --text: #f2f4f8;
-      --muted: #9aa3b2;
-      --accent: #6c7bff;
-      --accent-2: #9b6cff;
-      --ring: rgba(108, 123, 255, 0.45);
+      --blue: #1f6bff;
+      --ink: #0c1322;
+      --muted: #5b6781;
+      --radius: 20px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: radial-gradient(1200px 600px at 50% -10%, #1b1f2e 0%, var(--bg) 55%);
-      color: var(--text);
+      /* SF Pro on Apple devices; Inter everywhere else. */
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #f7faff 0%, #eaf1fe 28%, #d6e0f8 68%, #c7d5f2 100%);
+      background-attachment: fixed;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 0 24px;
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
-    .wrap { max-width: 720px; width: 100%; padding: 96px 0 64px; }
-    .logo {
-      width: 84px; height: 84px; margin: 0 auto 28px;
-      display: grid; place-items: center;
-      border-radius: 22px;
-      background: linear-gradient(140deg, var(--accent), var(--accent-2));
-      box-shadow: 0 12px 40px -8px var(--ring);
+
+    /* header */
+    header {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px clamp(20px, 5vw, 56px);
+      backdrop-filter: saturate(140%) blur(10px);
+      background: rgba(247, 250, 255, 0.6);
     }
-    .logo svg { width: 46px; height: 46px; }
-    h1 { font-size: 52px; letter-spacing: -0.03em; font-weight: 700; }
-    .tag { font-size: 21px; color: var(--text); margin-top: 16px; font-weight: 500; }
-    .lede { font-size: 17px; color: var(--muted); margin-top: 18px; line-height: 1.6; max-width: 560px; margin-left: auto; margin-right: auto; }
-    .cta { margin-top: 40px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .logo-img { height: 30px; width: auto; display: block; }
+    .nav-cta {
+      font-family: inherit; font-size: 15px; font-weight: 600;
+      color: #fff; background: var(--blue); text-decoration: none;
+      padding: 9px 18px; border-radius: 11px;
+      box-shadow: 0 8px 18px -6px rgba(31, 107, 255, 0.55);
+      transition: transform .15s ease;
+    }
+    .nav-cta:hover { transform: translateY(-1px); }
+
+    /* shared headline: blue line + black line */
+    .headline { line-height: 1.07; letter-spacing: -0.03em; font-weight: 800; }
+    .headline .blue { display: block; color: var(--blue); }
+    .headline .ink  { display: block; color: var(--ink); }
+
+    /* hero */
+    .hero { text-align: center; padding: clamp(44px, 8vw, 96px) 24px 32px; }
+    .hero .headline { font-size: clamp(34px, 6vw, 62px); }
+    .hero .lede {
+      max-width: 560px; margin: 22px auto 0;
+      font-size: clamp(16px, 2.2vw, 19px); font-weight: 400; color: var(--muted); line-height: 1.55;
+    }
+    .cta { margin-top: 34px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
     .download {
       display: inline-flex; align-items: center; gap: 10px;
-      background: linear-gradient(140deg, var(--accent), var(--accent-2));
-      color: #fff; font-size: 18px; font-weight: 600;
-      padding: 16px 32px; border-radius: 14px; text-decoration: none;
-      box-shadow: 0 10px 30px -6px var(--ring);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      font-family: inherit; font-size: 19px; font-weight: 600;
+      color: #fff; background: var(--blue); text-decoration: none;
+      padding: 16px 34px; border-radius: 15px;
+      box-shadow: 0 14px 30px -8px rgba(31, 107, 255, 0.6);
+      transition: transform .15s ease, box-shadow .15s ease;
     }
-    .download:hover { transform: translateY(-2px); box-shadow: 0 16px 38px -6px var(--ring); }
-    .download svg { width: 20px; height: 20px; }
-    .req { font-size: 14px; color: var(--muted); }
-    .features {
-      margin-top: 72px;
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
-      text-align: left;
+    .download:hover { transform: translateY(-2px); box-shadow: 0 20px 40px -8px rgba(31, 107, 255, 0.65); }
+    .download svg { width: 21px; height: 21px; }
+    .req { font-size: 14px; font-weight: 400; color: var(--muted); }
+
+    /* feature sections */
+    .feature { text-align: center; padding: clamp(36px, 6vw, 76px) 24px; }
+    .feature .headline { font-size: clamp(28px, 4.6vw, 46px); }
+    .media { margin: clamp(28px, 5vw, 52px) auto 0; }
+    .media img { display: block; max-width: 100%; height: auto; }
+
+    /* feature 1: two recorder windows, offset like the marketing art */
+    .windows {
+      display: flex; justify-content: center; align-items: center;
+      gap: clamp(16px, 3vw, 36px); max-width: 760px;
     }
-    .card {
-      background: var(--panel);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 16px; padding: 22px;
+    .windows img { width: clamp(150px, 34vw, 300px); }
+    .windows .win-a { transform: translateY(20px); }
+    .windows .win-b { transform: translateY(-20px); }
+
+    .media.wide { max-width: 980px; }
+    .media.laptop { max-width: 900px; }
+
+    footer {
+      text-align: center; padding: 48px 24px 56px;
+      color: var(--muted); font-size: 13px; font-weight: 400;
     }
-    .card h3 { font-size: 16px; margin-bottom: 8px; }
-    .card p { font-size: 14px; color: var(--muted); line-height: 1.55; }
-    footer { margin-top: auto; padding: 40px 0; color: var(--muted); font-size: 13px; }
     footer a { color: var(--muted); }
+
     @media (max-width: 640px) {
-      h1 { font-size: 40px; }
-      .features { grid-template-columns: 1fr; }
-      .wrap { padding-top: 64px; }
+      .windows { flex-direction: column; gap: 20px; }
+      .windows .win-a, .windows .win-b { transform: none; }
+      .windows img { width: min(72vw, 280px); }
     }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <div class="logo" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
-        <line x1="3" y1="12" x2="3" y2="12" /><line x1="6.5" y1="9" x2="6.5" y2="15" />
-        <line x1="10" y1="5" x2="10" y2="19" /><line x1="13.5" y1="8" x2="13.5" y2="16" />
-        <line x1="17" y1="6" x2="17" y2="18" /><line x1="20.5" y1="10" x2="20.5" y2="14" />
-      </svg>
-    </div>
-    <h1>Scribewise</h1>
-    <p class="tag">Record, transcribe, and summarize. Privately, on your Mac.</p>
+  <header>
+    <a href="/" aria-label="Scribewise home">
+      <img class="logo-img" src="assets/logo.png" alt="Scribewise" />
+    </a>
+    <a class="nav-cta" href="https://github.com/nicblunck/scribewise/releases/latest/download/Scribewise.zip">Download</a>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1 class="headline">
+      <span class="blue">Record. Transcribe. Summarize.</span>
+      <span class="ink">Privately, on your Mac.</span>
+    </h1>
     <p class="lede">
       Scribewise captures your microphone and your computer's audio, turns it into
-      an accurate transcript, and writes you a clean summary. Everything runs
-      on-device, so your conversations never leave your Mac.
+      an accurate transcript, and writes you a clean summary. Nothing ever leaves your Mac.
     </p>
-
     <div class="cta">
       <a class="download" href="https://github.com/nicblunck/scribewise/releases/latest/download/Scribewise.zip">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 3v12" /><path d="M7 10l5 5 5-5" /><path d="M5 21h14" />
         </svg>
         Download for macOS
       </a>
       <p class="req">Free. Requires macOS 15 (Sequoia) or later on Apple Silicon.</p>
     </div>
+  </section>
 
-    <section class="features">
-      <div class="card">
-        <h3>Fully on-device</h3>
-        <p>Transcription and summaries run locally. No accounts, no uploads, no cloud.</p>
-      </div>
-      <div class="card">
-        <h3>Mic and system audio</h3>
-        <p>Capture both sides of a call or meeting, then get speaker-separated notes.</p>
-      </div>
-      <div class="card">
-        <h3>Updates itself</h3>
-        <p>Scribewise quietly checks for new versions and updates with one click.</p>
-      </div>
-    </section>
-  </main>
+  <!-- FEATURE 1 -->
+  <section class="feature">
+    <h2 class="headline">
+      <span class="blue">Record</span>
+      <span class="ink">System Audio + Microphone Input</span>
+    </h2>
+    <div class="media windows">
+      <img class="win-a" src="assets/recorder-idle.png" alt="Scribewise recorder, ready to record" loading="lazy" />
+      <img class="win-b" src="assets/recorder-recording.png" alt="Scribewise recording microphone and system audio" loading="lazy" />
+    </div>
+  </section>
+
+  <!-- FEATURE 2 -->
+  <section class="feature">
+    <h2 class="headline">
+      <span class="blue">Transcribe + Summarize</span>
+      <span class="ink">Meetings, Notes, + More</span>
+    </h2>
+    <div class="media wide">
+      <img src="assets/library.png" alt="Scribewise library showing a transcribed meeting with speakers" loading="lazy" />
+    </div>
+  </section>
+
+  <!-- FEATURE 3 -->
+  <section class="feature">
+    <h2 class="headline">
+      <span class="blue">Always Ready</span>
+      <span class="ink">Quick Record Overlay</span>
+    </h2>
+    <div class="media laptop">
+      <img src="assets/overlay.png" alt="Scribewise quick record overlay on a MacBook" loading="lazy" />
+    </div>
+  </section>
 
   <footer>
     Made by Earthling &amp; Co. &middot;
